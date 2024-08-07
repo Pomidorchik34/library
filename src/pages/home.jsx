@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 import ToDoItem from "../assets/Components/task";
 function App() {
@@ -10,14 +10,26 @@ function App() {
   let name = useRef("");
   let isValid = true;
   let users = localStorage.getItem("users");
-  users = JSON.parse(users);
+  if (users == null) {
+    users = [];
+  } else {
+    users = JSON.parse(users);
+  }
+  useEffect(() => {
+    if (users == null) {
+      navigate("/login");
+    }
+  });
+
   useEffect(() => {
     if (token == null) {
+      isValid = false;
       navigate("/login");
     }
 
     if (localStorage.getItem("users")) {
     } else {
+      isValid = false;
       navigate("/login");
     }
     let index;
@@ -28,6 +40,10 @@ function App() {
     });
     setToDoList(users[index].books);
   }, []);
+  if ((isValid = false)) {
+    navigate("/login");
+    return;
+  }
 
   let user = localStorage.getItem("userEmail");
   const inputRef = useRef();
@@ -35,6 +51,7 @@ function App() {
   const Author = useRef("");
 
   console.log(users);
+
   //
 
   const add = () => {
@@ -155,9 +172,10 @@ function App() {
         <label>
           <select onChange={changeAdmin} id="">
             <option value="user">user</option>
-            {users.map((item, index) => {
-              return <option value={item.email}>{item.email}</option>;
-            })}
+            {users.length &&
+              users.map((item, index) => {
+                return <option value={item.email}>{item.email}</option>;
+              })}
           </select>
         </label>
       </nav>
