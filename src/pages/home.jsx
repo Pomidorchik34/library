@@ -11,7 +11,7 @@ function App() {
   let isValid = true;
   let users = localStorage.getItem("users");
   if (users == null) {
-    users = [];
+    users = [0];
   } else {
     users = JSON.parse(users);
   }
